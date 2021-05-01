@@ -22,6 +22,6 @@ def index():
     j = json.loads(r.text)
     city = j['city']
     print(url)
-    print(API_KEY)
+    print(request.remote_addr)
     print(city)
     return j
