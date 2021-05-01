@@ -10,7 +10,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 app = Flask(__name__)
 
 # Set up database
-engine = create_engine(os.getenv("DATABASE_URL", "sqlite:///database.db"))
+engine = create_engine(os.getenv("DATABASE_URI", "sqlite:///database.db"))
 db = scoped_session(sessionmaker(bind=engine))
 
 API_KEY = os.getenv("IPSTACK_API_KEY")
