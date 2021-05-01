@@ -3,4 +3,3 @@ SQLAlchemy
 gunicorn
 requests
 psycopg2
-Flask-Session
