@@ -26,6 +26,7 @@ def index():
     url = f'http://api.ipstack.com/{request.remote_addr}?access_key={API_KEY}'
     r = requests.get(url)
     j = json.loads(r.text)
-    # city = j['city']
-
+    city = j['city']
+    print(API_KEY)
+    print(city)
     return j
