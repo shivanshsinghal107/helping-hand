@@ -17,11 +17,16 @@ API_KEY = os.getenv("IPSTACK_API_KEY")
 
 @app.route("/", methods = ['GET', 'POST'])
 def index():
-    url = f'http://api.ipstack.com/{request.remote_addr}?access_key={API_KEY}'
+    if request.headers.getlist("X-Forwarded-For"):
+       ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+       ip = request.remote_addr
+    
+    url = f'http://api.ipstack.com/{ip}?access_key={API_KEY}'
     r = requests.get(url)
     j = json.loads(r.text)
     city = j['city']
     print(url)
-    print(request.remote_addr)
+    print(ip)
     print(city)
     return j
