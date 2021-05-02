@@ -66,11 +66,7 @@
         padding-right: 10%;
 
 }
-.search {
-    position: relative;
-    box-shadow: 0 0 40px rgba(51, 51, 51, .1);
 
-}
 .ip{
            width: 40%;
            margin: 5px;
@@ -101,6 +97,11 @@
            width: 82%;
            margin-left: 9%;
        }
+
+       
+        .col-sm-5 p{
+            margin-top: 32%;
+        }
        
         @media only screen and (max-width: 600px) {
             .custom{
@@ -120,36 +121,21 @@
            margin-bottom: 20;   
        }
             .formbox{
-           margin-top: 3%;
+           margin-top: 5%;
        }  
+
+       .col-sm-5 p{
+            margin-top: 12%;
+        }
         }
 
-        
+        .conn{
+            width: 70%;
+            height: auto;
+        }
 
-.search input {
-    height: 50px;
-    text-indent: 25px;
-    border: 2px solid #d6d4d4
-}
 
-.search input:focus {
-    box-shadow: none;
-    border: 2px solid rgb(168, 168, 255)
-}
 
-.search .fa-search {
-    position: absolute;
-    top: 20px;
-    left: 16px
-}
-
-.search button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    height: 40px;
-    width: 100px;
-}
     </style>
 </head>
 
@@ -176,27 +162,17 @@
 
     <div class="container text-center">
         <div class="row content">
+            
             <div class="col-sm-7">
-                <br><br>
-                <div class="search"> <input type="text" class="form-control"
-                        placeholder="Enter City Name">
-                         <button class="btn btn-primary">Search</button> 
-                </div>
-
-                <div>
-                    //search box and leads acc to it
-                </div>
-
-
-               
-            </div>
-            <div class="col-sm-5">
                 <br>
                 <h2>Post your custom requirement:</h2>
                 <p class="custom">You can request for a custom medical requirement by filling out this form. You'll be contacted as soon as we get a lead.</p>
                 <div class="formbox">
                     <br>
                     <form action="">
+                        <input required  type="radio" name="choice">Need Help</input><br>
+                        <input required type="radio" name="choice">Give Leads</input>
+                        <br>
                         <input type="text" required placeholder="NAME" class="ip"/>
                         <input type="text" required placeholder="EMAIL ADDRESS" class="ip"/>
                         <div class="autocomplete" style="position: relative;"><input type="text" required placeholder="SELECT STATE" class="ip state" id="state" name="myCountry" /></div>
@@ -217,6 +193,17 @@
                     </form>
                     <br>
                 </div>
+            </div>
+
+            <div class="col-sm-5">
+ 
+                <p>
+                    A paragraph is a series of related sentences developing a central idea, called the topic. Try to think about paragraphs
+                    in terms of thematic unity: a paragraph is a sentence or a group of sentences that supports one central, unified idea.
+                    Paragraphs add one idea at a time to your broader argument.
+                </p>
+                <br>
+                <img class="conn" src="./assets/undraw_online_connection_6778.png"/>
             </div>
         </div>
     </div>
