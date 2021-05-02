@@ -49,7 +49,7 @@
     height: 150px;
     border-radius: 150px;
     text-align: center;
-    margin-top: 5%;
+    margin-top: 2%;
 }
 
 .search {
@@ -88,14 +88,19 @@
 p{
     width: 60%;
 }
+.navbar-brand img{
+    width: 20%;
+    margin-top: 0;
+    margin-right: 0;
+}
 
 @media only screen and (max-width: 600px) {
 
   .btn-circle{
       width: 80px;
     height: 80px;
-    margin-top: 2%;
-    margin-bottom: 2%;
+    margin-top: 5%;
+    margin-bottom: 5%;
   }
 
   .btn-circle h2{
@@ -107,6 +112,7 @@ p{
   }
   p{
       width: 90%;
+      margin-bottom: 10%;
   }
 }
 .city{
@@ -128,11 +134,13 @@ p{
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Logo</a>
+                <a class="navbar-brand" href="#"><img src="../static/helpinghandlogo.png"/></a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav">
-                    <li ><a href="/">Home</a></li>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ><a href="../templates/home.html">Home</a></li>
+                    <li><a href="../templates/get.html">Help</a></li>
+                    <li><a href="../templates/about.html">About</a></li>
                 </ul>
                 
             </div>
@@ -144,15 +152,16 @@ p{
             <br>
             <br>
             <center>
-            <h1> Hello! </h1>
-            <p>
+            <h1> Helping-Hand </h1>
+            <br>
+            <p class="text-justify">
                 A paragraph is a series of related sentences developing a central idea, called the topic. Try to think about paragraphs
                 in terms of thematic unity: a paragraph is a sentence or a group of sentences that supports one central, unified idea.
                 Paragraphs add one idea at a time to your broader argument.
             </p>
-            
+            <br>
                 <div class="search">
-                    <form action="{{ url_for('home') }}" method="post">
+                    <form action="{{ url_for('home') }}" method="post" autocomplete="off">
                         <div class="autocomplete" style="position: relative;">
                             <input id="city" type="text" required placeholder="Enter City / District name" class="form-control"
                                 name="district" />
@@ -162,16 +171,11 @@ p{
                 </div>
             </center>
 
-<<<<<<< HEAD:home.html
-            <br>
-                <a href="./get.html"><button type="button" class="btn btn-success btn-circle btn-lg">
-=======
-                <a href="/help"><button type="button" class="btn btn-success btn-circle btn-lg">
->>>>>>> 039339821e3f2f2c560ea44f73eea751cb8a5d76:templates/home.html
+                <a href="../templates/get.html"><button type="button" class="btn btn-success btn-circle btn-lg">
                     <h2>HELP</h2>
                 </button></a>
 
-                <img class="city" src="./assets/undraw_city_life_gnpr.png"/>
+                <img class="city" src="../static/undraw_city_life_gnpr.png"/>
 
         </div>
     </div>

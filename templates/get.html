@@ -133,6 +133,11 @@
             width: 70%;
             height: auto;
         }
+        .navbar-brand img{
+    width: 20%;
+    margin-top: 0;
+    margin-right: 0;
+}
 
 
 
@@ -149,11 +154,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Logo</a>
+                <a class="navbar-brand" href="#"><img src="../static/helpinghandlogo.png" /></a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav">
-                    <li><a href="/">Home</a></li>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../templates/home.html">Home</a></li>
+                    <li><a href="../templates/get.html">Help</a></li>
+                    <li><a href="../templates/about.html">About</a></li>
                 </ul>
 
             </div>
@@ -169,15 +176,9 @@
                 <p class="custom">You can request for a custom medical requirement by filling out this form. You'll be contacted as soon as we get a lead.</p>
                 <div class="formbox">
                     <br>
-<<<<<<< HEAD:get.html
-                    <form action="">
-                        <input required  type="radio" name="choice">I Need Help</input><br>
-                        <input required type="radio" name="choice">I can Give Leads</input>
-=======
-                    <form action="{{ url_for('process') }}" method="post">
+                    <form action="{{ url_for('process') }}" method="post" autocomplete="off">
                         <input required type="radio" name="help" value="gethelp">Need Help</input><br>
                         <input required type="radio" name="help" value="giveleads">Give Leads</input>
->>>>>>> 039339821e3f2f2c560ea44f73eea751cb8a5d76:templates/get.html
                         <br>
                         <input type="text" name="name" required placeholder="NAME" class="ip"/>
                         <input type="text" name="email" required placeholder="EMAIL ADDRESS" class="ip"/>
@@ -190,6 +191,7 @@
                             <option value="beds">Hospital Bed</option>
                             <option value="icu">ICU & Ventilator</option>
                             <option value="plasma">Plasma</option>
+                            <option value="remdesivir">Remdesivir</option>
                         </select>
                         <div class="autocomplete" style="position: relative;"><input type="text" name="bgroup" required placeholder="BLOOD GROUP"
                                 class="ip dist" id="bgrp" /></div>
@@ -203,7 +205,7 @@
 
             <div class="col-sm-5">
  
-                <p>
+                <p class="text-justify">
                     A paragraph is a series of related sentences developing a central idea, called the topic. Try to think about paragraphs
                     in terms of thematic unity: a paragraph is a sentence or a group of sentences that supports one central, unified idea.
                     Paragraphs add one idea at a time to your broader argument.
