@@ -149,11 +149,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Logo</a>
+                <a class="navbar-brand" href="/">Logo</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li><a href="./home.html">Home</a></li>
+                    <li><a href="/">Home</a></li>
                 </ul>
 
             </div>
@@ -169,25 +169,31 @@
                 <p class="custom">You can request for a custom medical requirement by filling out this form. You'll be contacted as soon as we get a lead.</p>
                 <div class="formbox">
                     <br>
+<<<<<<< HEAD:get.html
                     <form action="">
                         <input required  type="radio" name="choice">I Need Help</input><br>
                         <input required type="radio" name="choice">I can Give Leads</input>
+=======
+                    <form action="{{ url_for('process') }}" method="post">
+                        <input required type="radio" name="help" value="gethelp">Need Help</input><br>
+                        <input required type="radio" name="help" value="giveleads">Give Leads</input>
+>>>>>>> 039339821e3f2f2c560ea44f73eea751cb8a5d76:templates/get.html
                         <br>
-                        <input type="text" required placeholder="NAME" class="ip"/>
-                        <input type="text" required placeholder="EMAIL ADDRESS" class="ip"/>
-                        <div class="autocomplete" style="position: relative;"><input type="text" required placeholder="SELECT STATE" class="ip state" id="state" name="myCountry" /></div>
-                        <div class="autocomplete" style="position: relative;"><input type="text" required placeholder="SELECT DISTRICT" class="ip dist" id="dist" name="myCountry" /></div>
-                        <input type="text" required placeholder="PHONE NUMBER" pattern="[6789][0-9]{9}" class="ip"/>
+                        <input type="text" name="name" required placeholder="NAME" class="ip"/>
+                        <input type="text" name="email" required placeholder="EMAIL ADDRESS" class="ip"/>
+                        <div class="autocomplete" style="position: relative;"><input type="text" name="state" required placeholder="SELECT STATE" class="ip state" id="state" name="myCountry" /></div>
+                        <div class="autocomplete" style="position: relative;"><input type="text" name="district" required placeholder="SELECT DISTRICT" class="ip dist" id="dist" name="myCountry" /></div>
+                        <input type="text" name="phone" required placeholder="PHONE NUMBER" pattern="[6789][0-9]{9}" class="ip"/>
                         <select required class="ip" name="req" id="cars">
                             <option value="" disabled selected>Choose a requirement</option>
                             <option value="oxygen">Oxygen Cylinder</option>
-                            <option value="saab">Hospital Bed</option>
-                            <option value="opel">ICU & Ventilator</option>
-                            <option value="audi">Plasma</option>
+                            <option value="beds">Hospital Bed</option>
+                            <option value="icu">ICU & Ventilator</option>
+                            <option value="plasma">Plasma</option>
                         </select>
-                        <div class="autocomplete" style="position: relative;"><input type="text" required placeholder="BLOOD GROUP"
-                                class="ip dist" id="bgrp" name="myCountry" /></div>
-                        <textarea placeholder="ANYTHING ADDITIONAL" ></textarea>
+                        <div class="autocomplete" style="position: relative;"><input type="text" name="bgroup" required placeholder="BLOOD GROUP"
+                                class="ip dist" id="bgrp" /></div>
+                        <textarea placeholder="ANYTHING ADDITIONAL" name="note" ></textarea>
                         <br>
                         <button class="btn btn-md btn-primary" type="submit">POST</button>
                     </form>
@@ -203,7 +209,7 @@
                     Paragraphs add one idea at a time to your broader argument.
                 </p>
                 <br>
-                <img class="conn" src="./assets/undraw_online_connection_6778.png"/>
+                <img class="conn" src="../static/undraw_online_connection_6778.png"/>
             </div>
         </div>
     </div>
