@@ -102,6 +102,10 @@
         .col-sm-5 p{
             margin-top: 32%;
         }
+
+        .bg{
+            width: 82%;
+        }
        
         @media only screen and (max-width: 600px) {
             .custom{
@@ -172,13 +176,12 @@
             
             <div class="col-sm-7">
                 <br>
-                <h2>Post your custom requirement:</h2>
-                <p class="custom">You can request for a custom medical requirement by filling out this form. You'll be contacted as soon as we get a lead.</p>
+                <h2>Post in our Database</h2>
                 <div class="formbox">
                     <br>
                     <form action="{{ url_for('process') }}" method="post" autocomplete="off">
-                        <input required type="radio" name="help" value="gethelp">Need Help</input><br>
-                        <input required type="radio" name="help" value="giveleads">Give Leads</input>
+                        <input required type="radio" name="help" value="gethelp">I Need Help</input><br>
+                        <input required type="radio" name="help" value="giveleads">I can Give a Lead</input>
                         <br>
                         <input type="text" name="name" required placeholder="NAME" class="ip"/>
                         <input type="text" name="email" required placeholder="EMAIL ADDRESS" class="ip"/>
@@ -193,23 +196,34 @@
                             <option value="plasma">Plasma</option>
                             <option value="remdesivir">Remdesivir</option>
                         </select>
-                        <div class="autocomplete" style="position: relative;"><input type="text" name="bgroup" required placeholder="BLOOD GROUP"
-                                class="ip dist" id="bgrp" /></div>
+                        <select class="ip bg" name="req" id="cars">
+                            <option value="" disabled selected>Choose blood group</option>
+                            <option value="a+">A+</option>
+                            <option value="a-">A-</option>
+                            <option value="b+">B+</option>
+                            <option value="b-">B-</option>
+                            <option value="o+">O+</option>
+                            <option value="o-">O-</option>
+                            <option value="ab+">AB+</option>
+                            <option value="ab-">AB-</option>
+                        </select>
                         <textarea placeholder="ANYTHING ADDITIONAL" name="note" ></textarea>
                         <br>
-                        <button class="btn btn-md btn-primary" type="submit">POST</button>
+                        <button class="btn btn-md btn-primary" type="submit" onclick="validation()">POST</button>
                     </form>
                     <br>
                 </div>
             </div>
 
-            <div class="col-sm-5">
- 
-                <p class="text-justify">
-                    A paragraph is a series of related sentences developing a central idea, called the topic. Try to think about paragraphs
-                    in terms of thematic unity: a paragraph is a sentence or a group of sentences that supports one central, unified idea.
-                    Paragraphs add one idea at a time to your broader argument.
+            <div class="col-sm-5" style="text-align: center;">
+                <center>
+                <p >
+                    You can post a customized medical requirement you need. <br> <i>Keep an eye on your mail inbox after posting, we'll notify
+                        there as soon as we get a lead. If we already have a lead, it'll be displayed on next page. </i><br> OR <br>
+                    You can give Leads if you have any.<br> <i>Please take out some time to fill this out if you have any valuable information,
+                    It may save a LIFE!</i> 
                 </p>
+                </center>
                 <br>
                 <img class="conn" src="../static/undraw_online_connection_6778.png"/>
             </div>
@@ -218,6 +232,7 @@
 
     
     <script>
+        
         var states =  ["Andhra Pradesh",
                 "Arunachal Pradesh",
                 "Assam",
@@ -992,6 +1007,8 @@
                     closeAllLists(e.target);
                 });
             }
+
+
 
     </script>
     <script>
