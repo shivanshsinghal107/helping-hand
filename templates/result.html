@@ -113,13 +113,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><img src="../static/helpinghandlogo.png" /></a>
+                <a class="navbar-brand" href="/"><img src="https://github.com/shivanshsinghal107/helping-hand/blob/main/static/helpinghandlogo.png?raw=true"/></a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="../templates/home.html">Home</a></li>
-                    <li><a href="../templates/get.html">Help</a></li>
-                    <li><a href="../templates/about.html">About</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/about">About</a></li>
                 </ul>
     
             </div>
@@ -128,60 +128,53 @@
 
     <div class="container">
         <div class="row content">
-
-            <div class="col-sm-12">
-                <h2>Leads:</h2>
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-success">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1"><b>List group item heading</b></h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                        </p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-success">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1"><b>List group item heading</b></h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                        </p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-success">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1"><b>List group item heading</b></h5>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                        </p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                    </a>
+            {% if table != "" %}            
+                <div class="col-sm-12">
+                    <h2>
+                        {% if table == "gethelp" %}
+                            Leads:
+                            {% set class="success" %}
+                        {% else %}
+                            People with matching requirements:
+                            {% set class="info" %}
+                        {% endif %}
+                    </h2>
+                    <div class="list-group">
+                        {% for d in data %}
+                            <div class="list-group-item list-group-item-action flex-column align-items-start list-group-item-{{ class }}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1"><b>{{ d['requirements'] }}</b></h5>
+                                    <small class="text-muted">{{ days[loop.index-1] }}</small>
+                                </div>
+                                <p class="mb-1">{{ d['name'] }} | Location: {{ d['district'] }}, {{ d['state'] }}</p>
+                                <small class="text-muted">Contact Number: <a href="telto:{{ d['phone'] }}">{{ d['phone'] }}</a><br>Email: <a href="mailto:{{ d['email'] }}">{{ d['email'] }}</a><br>{{ d['note'] }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-
-            </div>
+            {% endif %}
            
             <br>
-
-            <div class="col-sm-6">
-                <h2>Hospitals Nearby:</h2>
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
-                    <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
-                    <a href="#" class="list-group-item list-group-item-action">Third item</a>
+            
+            {% if table != "giveleads" %}
+                <div class="col-sm-6">
+                    <h2>Hospitals Nearby:</h2>
+                    <div class="list-group">
+                        {% for place in places %}
+                            <a href="{{ place['url'] }}" class="list-group-item list-group-item-action">{{ place['name'] }}</a>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-sm-6">
-                <h2>Helpful tweets:</h2>
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
-                    <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
-                    <a href="#" class="list-group-item list-group-item-action">Third item</a>
+                <div class="col-sm-6">
+                    <h2>Useful tweets:</h2>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
+                        <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
+                        <a href="#" class="list-group-item list-group-item-action">Third item</a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             
 
         </div>
