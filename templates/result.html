@@ -43,7 +43,7 @@
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
- 
+
         .search {
             width: 75%;
             position: relative;
@@ -121,14 +121,14 @@
                     <li><a href="/help">Help</a></li>
                     <li><a href="/about">About</a></li>
                 </ul>
-    
+
             </div>
         </div>
     </nav>
 
     <div class="container">
         <div class="row content">
-            {% if table != "" %}            
+            {% if table != "" %}
                 <div class="col-sm-12">
                     <h2>
                         {% if table == "gethelp" %}
@@ -147,15 +147,15 @@
                                     <small class="text-muted">{{ days[loop.index-1] }}</small>
                                 </div>
                                 <p class="mb-1">{{ d['name'] }} | Location: {{ d['district'] }}</p>
-                                <small class="text-muted">Contact Number: <a href="telto:{{ d['phone'] }}">{{ d['phone'] }}</a><br>Email: <a href="mailto:{{ d['email'] }}">{{ d['email'] }}</a><br>{{ d['note'] }}</small>
+                                <small class="text-muted">Contact Number: <a href="tel:{{ d['phone'] }}">{{ d['phone'] }}</a><br>Email: <a href="mailto:{{ d['email'] }}">{{ d['email'] }}</a><br>{{ d['note'] }}</small>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             {% endif %}
-           
+
             <br>
-            
+
             {% if table != "giveleads" %}
                 <div class="col-sm-6">
                     <h2>Hospitals Nearby:</h2>
@@ -183,7 +183,7 @@
                     </div>
                 {% endif %}
             {% endif %}
-            
+
 
         </div>
     </div>
