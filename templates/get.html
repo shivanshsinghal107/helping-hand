@@ -141,6 +141,13 @@
     margin-right: 0;
 }
 
+.rdo input{
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 4%;
+}
+
+
 
 
     </style>
@@ -178,9 +185,12 @@
                 <div class="formbox">
                     <br>
                     <form action="{{ url_for('process') }}" method="post" autocomplete="off">
-                        <input required type="radio" name="help" value="gethelp">Need Help</input><br>
-                        <input required type="radio" name="help" value="giveleads">Give Leads</input>
-                        <br><br>
+                        <div class="rdo" style="display: inline;">
+                            <input required type="radio" name="help" value="gethelp">Need Help</input>
+                            <input required type="radio" name="help" value="giveleads">Give Leads</input>
+                        </div>
+                        
+                        
                         <input type="text" name="name" required placeholder="NAME" class="ip"/>
                         <input type="text" name="email" required placeholder="EMAIL ADDRESS" class="ip"/>
                         <div class="autocomplete" style="position: relative;"><input type="text" name="district" required placeholder="SELECT DISTRICT" class="ip dist" id="dist" name="myCountry" /></div>
