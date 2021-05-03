@@ -1,7 +1,7 @@
 Flask
 SQLAlchemy
 gunicorn
-requests
+psycopg2
 Flask-Session
 tweepy
 python-google-places
