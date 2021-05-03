@@ -79,7 +79,6 @@ def process():
         table = request.form.get("help")
         name = request.form.get("name")
         email = request.form.get("email")
-        state = request.form.get("state")
         district = request.form.get("district")
         phone = request.form.get("phone")
         req = request.form.get("req")
@@ -88,11 +87,11 @@ def process():
         date = str(datetime.datetime.utcnow())
         unique_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
-        db.execute(f"INSERT INTO {table} (unique_id, name, state, district, date, requirements, bgroup, phone, email, note) VALUES (:unique_id, :name, :state, :district, :date, :requirements, :bgroup, :phone, :email, :note)", {"unique_id": unique_id, "name": name, "state": state, "district": district, "date": date, "requirements": req, "bgroup": bgroup, "phone": phone, "email": email, "note": text})
+        db.execute(f"INSERT INTO {table} (unique_id, name, district, date, requirements, bgroup, phone, email, note) VALUES (:unique_id, :name, :district, :date, :requirements, :bgroup, :phone, :email, :note)", {"unique_id": unique_id, "name": name, "district": district, "date": date, "requirements": req, "bgroup": bgroup, "phone": phone, "email": email, "note": text})
         db.commit()
         db.close()
 
-        print(table, name, email, state, district, phone, req, bgroup, text, date)
+        print(table, name, email, district, phone, req, bgroup, text, date)
 
         city = district.replace(" ", "-")
         return redirect(f"/posts/{table}/{city}/{unique_id}")
@@ -168,7 +167,7 @@ def posts(table, city, unique_id):
                 else:
                     day = f"{diff.days} days ago"
                 days.append(day)
-                body = f"{req} ({day})\n\nLead given by: {d['name']}\nLocation: {d['district']}, {d['state']}\nPhone: {d['phone']}\nEmail: {d['email']}"
+                body = f"{req} ({day})\n\nLead given by: {d['name']}\nLocation: {d['district']}\nPhone: {d['phone']}\nEmail: {d['email']}"
             db.close()
             send_mail(email, "Lead Found", body)
             return render_template("result.html", table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts)
@@ -188,7 +187,7 @@ def posts(table, city, unique_id):
                 else:
                     day = f"{diff.days} days ago"
                 days.append(day)
-                body = f"{req} ({day})\n\nLead given by: {curr['name']}\nLocation: {curr['district']}, {curr['state']}\nPhone: {curr['phone']}\nEmail: {curr['email']}"
+                body = f"{req} ({day})\n\nLead given by: {curr['name']}\nLocation: {curr['district']}\nPhone: {curr['phone']}\nEmail: {curr['email']}"
                 send_mail(d['email'], "Lead Found", body)
             db.close()
 

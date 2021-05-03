@@ -146,7 +146,7 @@
                                     <h5 class="mb-1"><b>{{ d['requirements'] }}</b></h5>
                                     <small class="text-muted">{{ days[loop.index-1] }}</small>
                                 </div>
-                                <p class="mb-1">{{ d['name'] }} | Location: {{ d['district'] }}, {{ d['state'] }}</p>
+                                <p class="mb-1">{{ d['name'] }} | Location: {{ d['district'] }}</p>
                                 <small class="text-muted">Contact Number: <a href="telto:{{ d['phone'] }}">{{ d['phone'] }}</a><br>Email: <a href="mailto:{{ d['email'] }}">{{ d['email'] }}</a><br>{{ d['note'] }}</small>
                             </div>
                         {% endfor %}
