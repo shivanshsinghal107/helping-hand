@@ -111,6 +111,7 @@
             .custom{
            width: 82%;
        }
+       
        .col-sm-7{
         padding-right: 4%;
 }
@@ -158,13 +159,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><img src="../static/helpinghandlogo.png" /></a>
+                <a class="navbar-brand" href="/"><img src="https://github.com/shivanshsinghal107/helping-hand/blob/main/static/helpinghandlogo.png?raw=true" /></a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="../templates/home.html">Home</a></li>
-                    <li><a href="../templates/get.html">Help</a></li>
-                    <li><a href="../templates/about.html">About</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/about">About</a></li>
                 </ul>
 
             </div>
@@ -180,9 +181,9 @@
                 <div class="formbox">
                     <br>
                     <form action="{{ url_for('process') }}" method="post" autocomplete="off">
-                        <input required type="radio" name="help" value="gethelp">I Need Help</input><br>
-                        <input required type="radio" name="help" value="giveleads">I can Give a Lead</input>
-                        <br>
+                        <input required type="radio" name="help" value="gethelp">Need Help</input><br>
+                        <input required type="radio" name="help" value="giveleads">Give Leads</input>
+                        <br><br>
                         <input type="text" name="name" required placeholder="NAME" class="ip"/>
                         <input type="text" name="email" required placeholder="EMAIL ADDRESS" class="ip"/>
                         <div class="autocomplete" style="position: relative;"><input type="text" name="state" required placeholder="SELECT STATE" class="ip state" id="state" name="myCountry" /></div>
@@ -190,13 +191,13 @@
                         <input type="text" name="phone" required placeholder="PHONE NUMBER" pattern="[6789][0-9]{9}" class="ip"/>
                         <select required class="ip" name="req" id="cars">
                             <option value="" disabled selected>Choose a requirement</option>
-                            <option value="oxygen">Oxygen Cylinder</option>
-                            <option value="beds">Hospital Bed</option>
-                            <option value="icu">ICU & Ventilator</option>
-                            <option value="plasma">Plasma</option>
-                            <option value="remdesivir">Remdesivir</option>
+                            <option value="Oxygen Cylinder">Oxygen Cylinder</option>
+                            <option value="Hospital Beds">Hospital Bed</option>
+                            <option value="ICU & Ventilator">ICU & Ventilator</option>
+                            <option value="Plasma">Plasma</option>
+                            <option value="Remdesivir">Remdesivir</option>
                         </select>
-                        <select class="ip bg" name="req" id="cars">
+                        <select class="ip bg" name="bgroup" id="cars">
                             <option value="" disabled selected>Choose blood group</option>
                             <option value="a+">A+</option>
                             <option value="a-">A-</option>
@@ -209,7 +210,7 @@
                         </select>
                         <textarea placeholder="ANYTHING ADDITIONAL" name="note" ></textarea>
                         <br>
-                        <button class="btn btn-md btn-primary" type="submit" onclick="validation()">POST</button>
+                        <button class="btn btn-md btn-primary" type="submit">POST</button>
                     </form>
                     <br>
                 </div>
@@ -232,7 +233,6 @@
 
     
     <script>
-        
         var states =  ["Andhra Pradesh",
                 "Arunachal Pradesh",
                 "Assam",
@@ -1008,13 +1008,10 @@
                 });
             }
 
-
-
     </script>
     <script>
         autocomplete(document.getElementById("state"), states);
         autocomplete(document.getElementById("dist"), districts);
-        autocomplete(document.getElementById("bgrp"), bloodgrps);
     </script>
 
 </body>
