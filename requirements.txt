@@ -2,7 +2,6 @@ Flask
 SQLAlchemy
 gunicorn
 psycopg2
-Flask-Session
 tweepy
 python-google-places
 geopy
