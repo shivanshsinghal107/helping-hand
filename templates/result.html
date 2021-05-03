@@ -165,15 +165,23 @@
                         {% endfor %}
                     </div>
                 </div>
-
-                <div class="col-sm-6">
-                    <h2>Useful tweets:</h2>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
-                        <a href="#" class="list-group-item list-group-item-action">Disabled item</a>
-                        <a href="#" class="list-group-item list-group-item-action">Third item</a>
+                {% if length != 0 %}
+                    <div class="col-sm-6">
+                        <h2>Useful tweets:</h2>
+                        <div class="list-group">
+                            {% for u in usernames %}
+                                <div class="list-group-item list-group-item-action flex-column align-items-start list-group-item-info">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1"><b>{{ u }}</b></h5>
+                                        <small class="text-muted">{{ locations[loop.index-1] }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ texts[loop.index-1] }}</p>
+                                    <small class="text-muted">Retweets: {{ retweets[loop.index-1] }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endif %}
             
 
