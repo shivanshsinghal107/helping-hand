@@ -8,6 +8,8 @@ import datetime
 from geopy.exc import GeocoderTimedOut
 from geopy.geocoders import Nominatim
 from googleplaces import GooglePlaces, types, lang
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from flask import Flask, request, render_template, redirect
 from sqlalchemy import create_engine
@@ -39,9 +41,14 @@ def send_mail(email, subject, body):
 
     server.login('helpinghand.cov19@gmail.com', PASSWORD)
 
-    msg = f"Subject: {subject}\n\n{body}"
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = "helpinghand.cov19@gmail.com"
+    msg["To"] = email
 
-    server.sendmail('helpinghand.cov19@gmail.com', email, msg)
+    msg.attach(MIMEText(body, 'html'))
+
+    server.sendmail('helpinghand.cov19@gmail.com', email, msg.as_string())
     print("HEY, EMAIL HAS BEEN SENT!")
 
     server.quit()
@@ -121,13 +128,14 @@ def posts(table, city, unique_id):
         print(city)
         print(location.latitude, location.longitude)
 
-        tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km').items(20)
+        tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
         tweets_list = [tweet for tweet in tweets]
 
         usernames = []
         locations = []
         retweets = []
         texts = []
+        urls = []
         for tweet in tweets_list:
             if tweet.user.screen_name not in usernames:
                 usernames.append(tweet.user.screen_name)
@@ -138,6 +146,7 @@ def posts(table, city, unique_id):
                 except:
                     text = tweet.full_text
                 texts.append(text)
+                urls.append(f"https://twitter.com/{tweet.user.screen_name}")
 
         google_places = GooglePlaces(GOOGLE_MAPS_API_KEY)
         query_result = google_places.nearby_search(
@@ -147,7 +156,7 @@ def posts(table, city, unique_id):
 
         h = 0
         places = []
-        for place in query_result.places[:10]:
+        for place in query_result.places[:15]:
             place.get_details()
             places.append({'name': place.name, 'url': place.url})
             h += 1
@@ -167,13 +176,26 @@ def posts(table, city, unique_id):
                 else:
                     day = f"{diff.days} days ago"
                 days.append(day)
-                body = f"{req} ({day})\n\nLead given by: {d['name']}\nLocation: {d['district']}\nPhone: {d['phone']}\nEmail: {d['email']}"
+                body = f"""\
+                    <html>
+                    <body>
+                        <b>{req}</b> ({day})<br><br>
+                        Lead given by: {d['name']}<br>
+                        Location: {d['district']}<br>
+                        Phone: <a href="tel:{d['phone']}">{d['phone']}</a><br>
+                        Email: <a href="mailto:{d['email']}">{d['email']}</a><br><br>
+                        <i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
+                        <a href='http://127.0.0.1:5000/report/{d['unique_id']}'>Report Spam</a>
+                    </body>
+                    </html>
+                """
+                # body = f"{req} ({day})\n\nLead given by: {d['name']}\nLocation: {d['district']}\nPhone: {d['phone']}\nEmail: {d['email']}"
             db.close()
             send_mail(email, "Lead Found", body)
-            return render_template("result.html", table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts)
+            return render_template("result.html", table = table, helps = 1, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
             db.close()
-            return render_template("result.html", places = places, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts)
+            return render_template("result.html", places = places, helps = 0, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
     else:
         data = db.execute("SELECT * FROM gethelp WHERE district = :district AND requirements = :requirements", {"district": city, "requirements": req}).fetchall()
         if len(data) > 0:
@@ -187,7 +209,20 @@ def posts(table, city, unique_id):
                 else:
                     day = f"{diff.days} days ago"
                 days.append(day)
-                body = f"{req} ({day})\n\nLead given by: {curr['name']}\nLocation: {curr['district']}\nPhone: {curr['phone']}\nEmail: {curr['email']}"
+                body = f"""\
+                    <html>
+                    <body>
+                        <b>{req}</b> ({day})<br><br>
+                        Lead given by: {curr['name']}<br>
+                        Location: {curr['district']}<br>
+                        Phone: <a href="tel:{curr['phone']}">{curr['phone']}</a><br>
+                        Email: <a href="mailto:{curr['email']}">{curr['email']}</a><br><br>
+                        <i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
+                        <a href='http://127.0.0.1:5000/report/{curr['unique_id']}'>Report Spam</a>
+                    </body>
+                    </html>
+                """
+                # body = f"{req} ({day})\n\nLead given by: {curr['name']}\nLocation: {curr['district']}\nPhone: {curr['phone']}\nEmail: {curr['email']}"
                 send_mail(d['email'], "Lead Found", body)
             db.close()
 
@@ -196,13 +231,14 @@ def posts(table, city, unique_id):
             print(city)
             print(location.latitude, location.longitude)
 
-            tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km').items(20)
+            tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
             tweets_list = [tweet for tweet in tweets]
 
             usernames = []
             locations = []
             retweets = []
             texts = []
+            urls = []
             for tweet in tweets_list:
                 if tweet.user.screen_name not in usernames:
                     usernames.append(tweet.user.screen_name)
@@ -213,6 +249,7 @@ def posts(table, city, unique_id):
                     except:
                         text = tweet.full_text
                     texts.append(text)
+                    urls.append(f"https://twitter.com/{tweet.user.screen_name}")
 
             google_places = GooglePlaces(GOOGLE_MAPS_API_KEY)
             query_result = google_places.nearby_search(
@@ -222,12 +259,12 @@ def posts(table, city, unique_id):
 
             h = 0
             places = []
-            for place in query_result.places[:10]:
+            for place in query_result.places[:15]:
                 place.get_details()
                 places.append({'name': place.name, 'url': place.url})
                 h += 1
             print(h)
-            return render_template("result.html", table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts)
+            return render_template("result.html", table = table, helps = 1, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
             db.close()
             return redirect("/")
@@ -243,15 +280,16 @@ def hospitals(city):
     auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
 
     api = tweepy.API(auth)
-    hashtag = f"#covidhelp OR #vaccination"
+    hashtag = "#covidhelp OR #vaccination"
 
-    tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km').items(20)
+    tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
     tweets_list = [tweet for tweet in tweets]
 
     usernames = []
     locations = []
     retweets = []
     texts = []
+    urls = []
     for tweet in tweets_list:
         if tweet.user.screen_name not in usernames:
             usernames.append(tweet.user.screen_name)
@@ -262,6 +300,7 @@ def hospitals(city):
             except:
                 text = tweet.full_text
             texts.append(text)
+            urls.append(f"https://twitter.com/{tweet.user.screen_name}")
 
     google_places = GooglePlaces(GOOGLE_MAPS_API_KEY)
     query_result = google_places.nearby_search(
@@ -271,10 +310,28 @@ def hospitals(city):
 
     h = 0
     places = []
-    for place in query_result.places[:15]:
+    for place in query_result.places:
         place.get_details()
         places.append({'name': place.name, 'url': place.url})
         h += 1
     print(h)
 
-    return render_template("result.html", places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, table = "")
+    return render_template("result.html", places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls, table = "")
+
+@app.route("/report/<unique_id>", methods = ['GET', 'POST'])
+def report(unique_id):
+    return render_template("spam.html", unique_id = unique_id)
+
+@app.route("/delete", methods = ['GET', 'POST'])
+def delete():
+    if request.method == 'GET':
+        return redirect("/")
+    else:
+        unique_id = request.form.get("unique_id")
+        data = db.execute("SELECT * FROM giveleads WHERE unique_id = :unique_id", {"unique_id": unique_id}).fetchall()
+        if len(data) > 0:
+            db.execute("DELETE FROM giveleads WHERE unique_id = :unique_id", {"unique_id": unique_id})
+            db.commit()
+        db.close()
+
+        return "<script>alert('Spam Deleted'); window.location = 'http://127.0.0.1:5000/';</script>"
