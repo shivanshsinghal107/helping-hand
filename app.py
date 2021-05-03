@@ -99,36 +99,46 @@ def process():
 
 @app.route("/posts/<table>/<city>/<unique_id>", methods = ['GET', 'POST'])
 def posts(table, city, unique_id):
+    days = []
+    curr = db.execute(f"SELECT * FROM {table} WHERE unique_id = :unique_id", {"unique_id": unique_id}).fetchall()[0]
+    req = curr['requirements']
+
     auth = tweepy.OAuthHandler(TWITTER_API_KEY, TWITTER_API_SECRET)
     auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
 
     api = tweepy.API(auth)
-    hashtag = "#VaccineShortage"
+    if "oxygen" in req.lower():
+        hashtag = "#oxygen"
+    elif "hospital" in req.lower():
+        hashtag = "#hospitalbed"
+    elif "icu" in req.lower():
+        hashtag = "#icu OR #ventilator"
+    else:
+        hashtag = f"#{req.lower()}"
 
-    tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended").items(20)
-    tweets_list = [tweet for tweet in tweets]
-
-    tweet_text = "<h2>Tweets</h2>"
-    for tweet in tweets_list[:10]:
-        tweet_text += f"username: {tweet.user.screen_name}<br>"
-        tweet_text += f"location: {tweet.user.location}<br>"
-        tweet_text += f"retweets: {tweet.retweet_count}<br>"
-        try:
-            text = tweet.retweeted_status.full_text
-        except:
-            text = tweet.full_text
-        tweet_text += f"text: {text}<br>"
-        hashtags = [hashtag['text'] for hashtag in tweet.entities['hashtags']]
-        tweet_text += f"hashtags: {hashtags}<br><br><br>"
-
-    days = []
-    curr = db.execute(f"SELECT * FROM {table} WHERE unique_id = :unique_id", {"unique_id": unique_id}).fetchall()[0]
-    req = curr['requirements']
     if table == "gethelp":
         city = city.replace("-", " ")
         location = findLatLng(f"{city}, India")
         print(city)
         print(location.latitude, location.longitude)
+
+        tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km').items(20)
+        tweets_list = [tweet for tweet in tweets]
+
+        usernames = []
+        locations = []
+        retweets = []
+        texts = []
+        for tweet in tweets_list:
+            if tweet.user.screen_name not in usernames:
+                usernames.append(tweet.user.screen_name)
+                locations.append(tweet.user.location)
+                retweets.append(tweet.retweet_count)
+                try:
+                    text = tweet.retweeted_status.full_text
+                except:
+                    text = tweet.full_text
+                texts.append(text)
 
         google_places = GooglePlaces(GOOGLE_MAPS_API_KEY)
         query_result = google_places.nearby_search(
@@ -161,10 +171,10 @@ def posts(table, city, unique_id):
                 body = f"{req} ({day})\n\nLead given by: {d['name']}\nLocation: {d['district']}, {d['state']}\nPhone: {d['phone']}\nEmail: {d['email']}"
             db.close()
             send_mail(email, "Lead Found", body)
-            return render_template("result.html", table = table, data = data, days = days, places = places)
+            return render_template("result.html", table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts)
         else:
             db.close()
-            return render_template("result.html", places = places, table = "")
+            return render_template("result.html", places = places, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts)
     else:
         data = db.execute("SELECT * FROM gethelp WHERE district = :district AND requirements = :requirements", {"district": city, "requirements": req}).fetchall()
         if len(data) > 0:
@@ -187,6 +197,24 @@ def posts(table, city, unique_id):
             print(city)
             print(location.latitude, location.longitude)
 
+            tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km').items(20)
+            tweets_list = [tweet for tweet in tweets]
+
+            usernames = []
+            locations = []
+            retweets = []
+            texts = []
+            for tweet in tweets_list:
+                if tweet.user.screen_name not in usernames:
+                    usernames.append(tweet.user.screen_name)
+                    locations.append(tweet.user.location)
+                    retweets.append(tweet.retweet_count)
+                    try:
+                        text = tweet.retweeted_status.full_text
+                    except:
+                        text = tweet.full_text
+                    texts.append(text)
+
             google_places = GooglePlaces(GOOGLE_MAPS_API_KEY)
             query_result = google_places.nearby_search(
                 lat_lng ={'lat': location.latitude, 'lng': location.longitude},
@@ -200,7 +228,7 @@ def posts(table, city, unique_id):
                 places.append({'name': place.name, 'url': place.url})
                 h += 1
             print(h)
-            return render_template("result.html", table = table, data = data, days = days, places = places)
+            return render_template("result.html", table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts)
         else:
             db.close()
             return redirect("/")
@@ -216,23 +244,25 @@ def hospitals(city):
     auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
 
     api = tweepy.API(auth)
-    hashtag = "#VaccineShortage"
+    hashtag = f"#covidhelp OR #vaccination"
 
-    tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended").items(20)
+    tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km').items(20)
     tweets_list = [tweet for tweet in tweets]
 
-    tweet_text = "<h2>Tweets</h2>"
-    for tweet in tweets_list[:10]:
-        tweet_text += f"username: {tweet.user.screen_name}<br>"
-        tweet_text += f"location: {tweet.user.location}<br>"
-        tweet_text += f"retweets: {tweet.retweet_count}<br>"
-        try:
-            text = tweet.retweeted_status.full_text
-        except:
-            text = tweet.full_text
-        tweet_text += f"text: {text}<br>"
-        hashtags = [hashtag['text'] for hashtag in tweet.entities['hashtags']]
-        tweet_text += f"hashtags: {hashtags}<br><br><br>"
+    usernames = []
+    locations = []
+    retweets = []
+    texts = []
+    for tweet in tweets_list:
+        if tweet.user.screen_name not in usernames:
+            usernames.append(tweet.user.screen_name)
+            locations.append(tweet.user.location)
+            retweets.append(tweet.retweet_count)
+            try:
+                text = tweet.retweeted_status.full_text
+            except:
+                text = tweet.full_text
+            texts.append(text)
 
     google_places = GooglePlaces(GOOGLE_MAPS_API_KEY)
     query_result = google_places.nearby_search(
@@ -248,4 +278,4 @@ def hospitals(city):
         h += 1
     print(h)
 
-    return render_template("result.html", places = places, table = "")
+    return render_template("result.html", places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, table = "")
