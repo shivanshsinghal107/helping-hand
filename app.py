@@ -185,7 +185,7 @@ def posts(table, city, unique_id):
                         Phone: <a href="tel:{d['phone']}">{d['phone']}</a><br>
                         Email: <a href="mailto:{d['email']}">{d['email']}</a><br><br>
                         <i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
-                        <a href='http://127.0.0.1:5000/report/{d['unique_id']}'>Report Spam</a>
+                        <a href='https://helping-hand-covid-19.herokuapp.com/report/{d['unique_id']}'>Report Spam</a>
                     </body>
                     </html>
                 """
@@ -218,7 +218,7 @@ def posts(table, city, unique_id):
                         Phone: <a href="tel:{curr['phone']}">{curr['phone']}</a><br>
                         Email: <a href="mailto:{curr['email']}">{curr['email']}</a><br><br>
                         <i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
-                        <a href='http://127.0.0.1:5000/report/{curr['unique_id']}'>Report Spam</a>
+                        <a href='https://helping-hand-covid-19.herokuapp.com/report/{curr['unique_id']}'>Report Spam</a>
                     </body>
                     </html>
                 """
@@ -334,4 +334,4 @@ def delete():
             db.commit()
         db.close()
 
-        return "<script>alert('Spam Deleted'); window.location = 'http://127.0.0.1:5000/';</script>"
+        return "<script>alert('Spam Deleted'); window.location = 'https://helping-hand-covid-19.herokuapp.com/';</script>"
