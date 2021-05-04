@@ -134,7 +134,7 @@
                         {% if table == "gethelp" %}
                             Leads:
                             {% set class="success" %}
-                        {% else %}
+                        {% elif table == "giveleads" %}
                             People with matching requirements:
                             {% set class="info" %}
                         {% endif %}
@@ -151,15 +151,15 @@
                             </div>
                         {% endfor %}
                     </div>
-                    {% if helps == 0 %}
-                      <h4>We're sorry that no leads were found in the district you entered. You can try filling the form for some nearby district.</h4>
-                    {% endif %}
                 </div>
+            {% endif %}
+            {% if helps == 0 %}
+                <h4>We're sorry that no leads were found in the district you entered. You can try filling the form for some nearby district.</h4>
             {% endif %}
 
             <br>
 
-            {% if table != "giveleads" %}
+            {% if table != "zeroleads" %}
                 <div class="col-sm-6">
                     <h2>Hospitals Nearby:</h2>
                     <div class="list-group">
@@ -168,23 +168,23 @@
                         {% endfor %}
                     </div>
                 </div>
-                {% if length != 0 %}
-                    <div class="col-sm-6">
-                        <h2>Tweets:</h2>
-                        <div class="list-group">
-                            {% for u in usernames %}
-                                <a href="{{ urls[loop.index-1] }}" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-info">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1"><b>{{ u }}</b></h5>
-                                        <small class="text-muted">{{ locations[loop.index-1] }}</small>
-                                    </div>
-                                    <p class="mb-1">{{ texts[loop.index-1] }}</p>
-                                    <small class="text-muted">Retweets: {{ retweets[loop.index-1] }}</small>
-                                </a>
-                            {% endfor %}
-                        </div>
+            {% endif %}
+            {% if length != 0 %}
+                <div class="col-sm-6">
+                    <h2>Tweets:</h2>
+                    <div class="list-group">
+                        {% for u in usernames %}
+                            <a href="{{ urls[loop.index-1] }}" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-info">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1"><b>{{ u }}</b></h5>
+                                    <small class="text-muted">{{ locations[loop.index-1] }}</small>
+                                </div>
+                                <p class="mb-1">{{ texts[loop.index-1] }}</p>
+                                <small class="text-muted">Retweets: {{ retweets[loop.index-1] }}</small>
+                            </a>
+                        {% endfor %}
                     </div>
-                {% endif %}
+                </div>
             {% endif %}
 
 
