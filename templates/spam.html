@@ -43,7 +43,7 @@
                     <li><a href="/help">Help</a></li>
                     <li><a href="/about">About</a></li>
                 </ul>
-                
+
             </div>
         </div>
     </nav>
@@ -53,10 +53,11 @@
             <br>
             <br>
             <center>
-                <h1> Report Spam: Are you sure? </h1>
+                <h1> Are you sure? </h1>
                 <br>
                 <form action="{{ url_for('delete') }}" method="post">
                     <input type="hidden" name="unique_id" value="{{ unique_id }}" />
+                    <input type="hidden" name="table" value="{{ table }}" />
                     <button class="btn btn-primary" style="width: 50%;" type="submit">Yes</button>
                 </form>
                 <br>
