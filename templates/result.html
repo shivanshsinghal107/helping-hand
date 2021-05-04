@@ -143,7 +143,7 @@
                         {% for d in data %}
                             <div class="list-group-item list-group-item-action flex-column align-items-start list-group-item-{{ class }}">
                                 <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1"><b>{{ d['requirements'] }}</b></h5>
+                                    <h5 class="mb-1"><b>{% if table == "giveleads" %}Need{% endif %} {{ d['requirements'] }} {% if d['requirements'] == "Plasma" %}({{ d['bgroup'] }}){% endif %}</b></h5>
                                     <small class="text-muted">{{ days[loop.index-1] }}</small>
                                 </div>
                                 <p class="mb-1">{{ d['name'] }} | Location: {{ d['district'] }}</p>
