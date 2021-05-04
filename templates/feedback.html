@@ -64,10 +64,11 @@ img{
             <div class="col-sm-6">
                 <h4>We hope our application could help you. <br><small> Please write your valuable feedback below.</small> </h4><br>
                 <center>
-                    
+
                         <div class="form-group">
-                            <form>
-                            <textarea placeholder="Write Feedback " class="form-control" id="exampleFormControlTextarea4" rows="3"></textarea>
+                            <form action="{{ url_for('submit_feedback') }}" method="post" autocomplete="off">
+                            <input type="hidden" name="unique_id" value="{{ unique_id }}" />
+                            <textarea placeholder="Write Feedback " class="form-control" id="exampleFormControlTextarea4" name="feedback" rows="3"></textarea>
                             <br>
                             <button type="submit" class="btn btn-warning">SUBMIT</button>
                             </form>
@@ -75,12 +76,12 @@ img{
                         <br>
                         <br>
                         <img src="../static/undraw_anonymous_feedback_y3co.png"/>
-                        
-                   
+
+
                 </center>
             </div>
             <div class="col-sm-3"></div>
-       
+
 
         </div>
     </div>
