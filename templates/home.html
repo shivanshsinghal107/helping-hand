@@ -93,6 +93,7 @@
 
 p{
     width: 60%;
+    margin-bottom: 0;
 }
 .navbar-brand img{
     width: 20%;
@@ -118,12 +119,16 @@ p{
   }
   p{
       width: 90%;
-      margin-bottom: 10%;
+      margin-bottom: 5%;
   }
 }
 .city{
     width: 100%;
     height: auto;
+}
+
+img{
+    margin-top: 0;
 }
 
 
@@ -155,17 +160,14 @@ p{
 
     <div class="container text-center">
         <div class="row content">
-            <br>
-            <br>
+
             <center>
             <h1> Helping-Hand </h1>
             <br>
             <p class="text-justify">
                 In these tough times let's join hands together and pledge to eradicate Covid-19. Through this platform one can
-                get a helping hand or be a helping hand.<br><br>From the search input, user can gather some useful information like hospitals nearby
-                and useful tweets in the location.
-                The <B>HELP</B> button serves the purpose of posting customized Requirements needed / Leads one may have. (like oxygen, beds, plasma etc).
-                We request the viewer to let us know of any leads they have. Let's try to save a life!
+                get a helping hand or be a helping hand.
+               
             </p>
             <br>
                 <div class="search">
@@ -177,12 +179,20 @@ p{
                         <button class="btn btn-primary" type="submit">Search</button>
                     </form>
                 </div>
-            </center>
+           
 
                 <a href="/help"><button type="button" class="btn btn-success btn-circle btn-lg">
                     <h2>HELP</h2>
-                </button></a>
-
+                </button></a><br>
+                <p class="text-justify">
+                    <b>How can you help ?</b><br>
+                    Click the HELP button and fill in the details about the lead you have. We will search if there is
+                     someone who may benifit from your lead and connect you to them by sharing their contact details.<br><br>
+                   <b> How will this help you ?</b><br>
+                    Click the HELP button and fill in your requirements. We will notify via mail as soon as we find someone in your area with a lead. If there is already
+                    a lead, we will display the details.
+                </p>
+                </center>
                 <img class="city" src="../static/undraw_city_life_gnpr.png"/>
 
         </div>

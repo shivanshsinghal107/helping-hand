@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Helping-Hand</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+ .form-control {
+    border: 2px solid rgb(201, 175, 30);
+}
+ .form-control:focus {
+    border: 2px solid rgb(201, 175, 30);
+    box-shadow: 0 0 0 0.5rem rgba(170, 180, 28, 0.25);
+}
+
+        .navbar-brand img{
+    width: 20%;
+    margin-top: 0;
+    margin-right: 0;
+}
+
+img{
+    width: 60%;
+    height: auto;
+}
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/"><img
+                        src="https://github.com/shivanshsinghal107/helping-hand/blob/main/static/helpinghandlogo.png?raw=true" /></a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/about">About</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container text-center">
+        <div class="row content">
+            <br>
+            <br>
+
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <h4>We hope our application could help you. <br><small> Please write your valuable feedback below.</small> </h4><br>
+                <center>
+                    
+                        <div class="form-group">
+                            <form>
+                            <textarea placeholder="Write Feedback " class="form-control" id="exampleFormControlTextarea4" rows="3"></textarea>
+                            <br>
+                            <button type="submit" class="btn btn-warning">SUBMIT</button>
+                            </form>
+                        </div>
+                        <br>
+                        <br>
+                        <img src="../static/undraw_anonymous_feedback_y3co.png"/>
+                        
+                   
+                </center>
+            </div>
+            <div class="col-sm-3"></div>
+       
+
+        </div>
+    </div>
+
+
+</body>
+
+
+</html>
