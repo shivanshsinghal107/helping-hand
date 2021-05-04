@@ -20,7 +20,6 @@ app = Flask(__name__)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URI", "sqlite:///database.db"))
 db = scoped_session(sessionmaker(bind=engine))
-db.init_app(app)
 
 # email password
 PASSWORD = os.getenv("PASSWORD")
