@@ -176,7 +176,7 @@ def posts(table, city, unique_id):
                 else:
                     day = f"{diff.days} days ago"
                 days.append(day)
-                body = f"""\
+                body += f"""\
                     <html>
                     <body>
                         <b>{req}</b> ({day})<br><br>
@@ -184,18 +184,24 @@ def posts(table, city, unique_id):
                         Location: {d['district']}<br>
                         Phone: <a href="tel:{d['phone']}">{d['phone']}</a><br>
                         Email: <a href="mailto:{d['email']}">{d['email']}</a><br><br>
-                        <i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
+                        <a href='https://helping-hand-covid-19.herokuapp.com/feedback/{curr['unique_id']}'>If you found this helpful, let us know.</a><br>
+                        <a href='https://helping-hand-covid-19.herokuapp.com/unsubscribe/{curr['unique_id']}'>Got the help? Unsubscribe.</a><br>
+                        <br><i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
                         <a href='https://helping-hand-covid-19.herokuapp.com/report/{d['unique_id']}'>Report Spam</a>
+                        <br><br><br>
                     </body>
                     </html>
                 """
                 # body = f"{req} ({day})\n\nLead given by: {d['name']}\nLocation: {d['district']}\nPhone: {d['phone']}\nEmail: {d['email']}"
             db.close()
-            send_mail(email, "Lead Found", body)
-            return render_template("result.html", table = table, helps = 1, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            try:
+                send_mail(email, "Lead Found", body)
+            except:
+                print("Invalid email")
+            return render_template("result.html", helps = 1, table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
             db.close()
-            return render_template("result.html", places = places, helps = 0, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 0, places = places, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
     else:
         data = db.execute("SELECT * FROM gethelp WHERE district = :district AND requirements = :requirements", {"district": city, "requirements": req}).fetchall()
         if len(data) > 0:
@@ -217,14 +223,25 @@ def posts(table, city, unique_id):
                         Location: {curr['district']}<br>
                         Phone: <a href="tel:{curr['phone']}">{curr['phone']}</a><br>
                         Email: <a href="mailto:{curr['email']}">{curr['email']}</a><br><br>
-                        <i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
+                        <a href='https://helping-hand-covid-19.herokuapp.com/feedback/{d['unique_id']}'>If you found this helpful, let us know.</a><br>
+                        <a href='https://helping-hand-covid-19.herokuapp.com/unsubscribe/{d['unique_id']}'>Got the help? Unsubscribe.</a><br>
+                        <br><i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
                         <a href='https://helping-hand-covid-19.herokuapp.com/report/{curr['unique_id']}'>Report Spam</a>
                     </body>
                     </html>
                 """
                 # body = f"{req} ({day})\n\nLead given by: {curr['name']}\nLocation: {curr['district']}\nPhone: {curr['phone']}\nEmail: {curr['email']}"
-                send_mail(d['email'], "Lead Found", body)
+                try:
+                    send_mail(d['email'], "Lead Found", body)
+                except:
+                    print("Invalid email")
+            # increase the helped count by 1
+            helped = db.execute("SELECT count FROM helped").fetchall()[0]['count']
+            helped += 1
+            db.execute("UPDATE helped SET count = :count", {"count": helped})
+            db.commit()
             db.close()
+            print(f"helped count: {helped}")
 
             city = city.replace("-", " ")
             location = findLatLng(f"{city}, India")
@@ -264,10 +281,34 @@ def posts(table, city, unique_id):
                 places.append({'name': place.name, 'url': place.url})
                 h += 1
             print(h)
-            return render_template("result.html", table = table, helps = 1, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 1, table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
             db.close()
-            return redirect("/")
+            city = city.replace("-", " ")
+            location = findLatLng(f"{city}, India")
+            print(city)
+            print(location.latitude, location.longitude)
+
+            tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
+            tweets_list = [tweet for tweet in tweets]
+
+            usernames = []
+            locations = []
+            retweets = []
+            texts = []
+            urls = []
+            for tweet in tweets_list:
+                if tweet.user.screen_name not in usernames:
+                    usernames.append(tweet.user.screen_name)
+                    locations.append(tweet.user.location)
+                    retweets.append(tweet.retweet_count)
+                    try:
+                        text = tweet.retweeted_status.full_text
+                    except:
+                        text = tweet.full_text
+                    texts.append(text)
+                    urls.append(f"https://twitter.com/{tweet.user.screen_name}")
+            return render_template("result.html", helps = 1, table = "zeroleads", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
 
 @app.route("/results/<city>", methods = ['GET', 'POST'])
 def hospitals(city):
@@ -320,18 +361,46 @@ def hospitals(city):
 
 @app.route("/report/<unique_id>", methods = ['GET', 'POST'])
 def report(unique_id):
-    return render_template("spam.html", unique_id = unique_id)
+    return render_template("spam.html", unique_id = unique_id, table = "giveleads")
+
+@app.route("/unsubscribe/<unique_id>", methods = ['GET', 'POST'])
+def unsubscribe(unique_id):
+    return render_template("spam.html", unique_id = unique_id, table = "gethelp")
 
 @app.route("/delete", methods = ['GET', 'POST'])
 def delete():
     if request.method == 'GET':
         return redirect("/")
     else:
+        table = request.form.get("table")
         unique_id = request.form.get("unique_id")
-        data = db.execute("SELECT * FROM giveleads WHERE unique_id = :unique_id", {"unique_id": unique_id}).fetchall()
+        data = db.execute(f"SELECT * FROM {table} WHERE unique_id = :unique_id", {"unique_id": unique_id}).fetchall()
         if len(data) > 0:
-            db.execute("DELETE FROM giveleads WHERE unique_id = :unique_id", {"unique_id": unique_id})
+            db.execute(f"DELETE FROM {table} WHERE unique_id = :unique_id", {"unique_id": unique_id})
             db.commit()
-        db.close()
+            db.close()
+            return "<script>alert('Record Removed'); window.location = 'https://helping-hand-covid-19.herokuapp.com/';</script>"
+        else:
+            db.close()
+            redirect("/")
 
-        return "<script>alert('Spam Deleted'); window.location = 'https://helping-hand-covid-19.herokuapp.com/';</script>"
+@app.route("/feedback/<unique_id>", methods = ['GET', 'POST'])
+def feedback(unique_id):
+    return render_template("feedback.html", unique_id = unique_id)
+
+@app.route("/submit-feedback", methods = ['GET', 'POST'])
+def submit_feedback():
+    if request.method == 'GET':
+        return redirect("/")
+    else:
+        unique_id = request.form.get("unique_id")
+        feedback = request.form.get("feedback")
+        data = db.execute("SELECT * FROM feedback WHERE unique_id = :unique_id", {"unique_id": unique_id}).fetchall()
+        if len(data) == 0:
+            db.execute("INSERT INTO feedback (unique_id, note) VALUES (:unique_id, :note)", {"unique_id": unique_id, "note": feedback})
+            db.commit()
+            db.close()
+            return "<script>alert('Thanks for the feedback'); window.location = 'https://helping-hand-covid-19.herokuapp.com/';</script>"
+        else:
+            db.close()
+            redirect("/")
