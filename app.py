@@ -245,7 +245,7 @@ def posts(table, city, unique_id):
         if len(data) > 0:
             return render_template("result.html", helps = 1, table = table, data = data, days = days, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
-            return render_template("result.html", helps = 1, table = table, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 1, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
     else:
         data = db.execute("SELECT * FROM gethelp WHERE district = :district AND requirements = :requirements", {"district": city, "requirements": req}).fetchall()
         city = city.replace("-", " ")
@@ -314,7 +314,7 @@ def posts(table, city, unique_id):
             return render_template("result.html", helps = 1, table = table, data = data, days = days, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
             db.close()
-            return render_template("result.html", helps = 1, table = table, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 1, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
 
 @app.route("/results/<city>", methods = ['GET', 'POST'])
 def hospitals(city):
