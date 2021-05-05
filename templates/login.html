@@ -1,0 +1,152 @@
+<html>
+
+<head>
+    <title>
+        Login
+    </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+
+        form{
+            width: 100%;
+        }
+
+        .box {
+
+            background-color: white;
+            border-radius: 10px;
+            border: 1.5px solid #ccc;
+            width: 100%px;
+            padding: 5%;
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            transition: box-shadow .3s;
+        }
+
+        .box:hover {
+            box-shadow: 0 0 11px rgba(33, 33, 33, .2);
+        }
+
+        .input {
+            background: none;
+            border: 3px solid darkcyan;
+            height: 50px;
+            font-size: 25px;
+            margin: 5%;
+            padding: 6px;
+            width: 100%;
+            border-radius: 24px;
+            color: gray;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .btn {
+            background: none;
+            border: 3px solid lightgreen;
+            padding: 10px;
+            border-radius: 50px;
+            width: 60%;
+            margin: 20px;
+            color: gray;
+            font-size: 30px;
+        }
+
+        .input:focus {
+            border-color: rgb(51, 51, 90);
+            transition: 0.3s;
+            border-color: lightgreen;
+        }
+
+        .btn:hover {
+            background-color: lightgreen;
+            color: black;
+        }
+
+        h2 {
+            color: #ccc;
+        }
+
+        .chat {
+            border: 1px solid silver;
+            border-radius: 10px;
+            border-bottom: 2px solid gray;
+            margin-bottom: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .user-name {
+            margin-left: 5%;
+            font-weight: bold;
+            color: black;
+        }
+
+        .chat-message {
+            margin-left: 5%;
+            font-size: 12px;
+            color: gray;
+        }
+
+   
+.navbar-brand img{
+    width: 20%;
+    margin-top: 0;
+    margin-right: 0;
+}
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/"><img
+                        src="https://github.com/shivanshsinghal107/helping-hand/blob/main/static/helpinghandlogo.png?raw=true" /></a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/help">Help</a></li>
+                    <li><a href="/about">About</a></li>
+                </ul>
+    
+            </div>
+        </div>
+    </nav>
+
+    <div class="box container">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <form  action="">
+                <h2>LOGIN</h2>
+            
+                <input type="text" placeholder="Username" class="input" required>
+                <input type="password" placeholder="Password" class="input" required>
+                <br>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+        <div class="col-sm-3"></div>
+       
+    </div>
+
+</body>
+
+</html>
