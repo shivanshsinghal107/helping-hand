@@ -21,8 +21,10 @@ app = Flask(__name__)
 engine = create_engine(os.getenv("DATABASE_URI", "sqlite:///database.db"))
 db = scoped_session(sessionmaker(bind=engine))
 
-# email password
+# credentails
 PASSWORD = os.getenv("PASSWORD")
+USER = os.getenv("USER")
+PASSW = os.getenv("PASSW")
 
 # twitter credentials
 TWITTER_API_KEY = os.getenv("TWITTER_API_KEY")
@@ -93,6 +95,15 @@ def process():
         text = request.form.get("note")
         date = str(datetime.datetime.utcnow())
         unique_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+        if table == "giveleads":
+            regex1 = '^[0-9]{12}@[a-z]{3}.svnit.ac.in$'
+            email1 = re.search(regex1, email)
+            regex2 = '^[0-9]{12}@[a-z]{4}.svnit.ac.in$'
+            email2 = re.search(regex2, email)
+
+            if (email1 == None) and (email2 == None):
+                table = "buffer"
 
         db.execute(f"INSERT INTO {table} (unique_id, name, district, date, requirements, bgroup, phone, email, note) VALUES (:unique_id, :name, :district, :date, :requirements, :bgroup, :phone, :email, :note)", {"unique_id": unique_id, "name": name, "district": district, "date": date, "requirements": req, "bgroup": bgroup, "phone": phone, "email": email, "note": text})
         db.commit()
@@ -198,12 +209,68 @@ def posts(table, city, unique_id):
                 send_mail(email, "Lead Found", body)
             except:
                 print("Invalid email")
-            return render_template("result.html", helps = 1, table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 1, table = table, places = places, data = data, days = days, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
             db.close()
-            return render_template("result.html", helps = 0, places = places, table = "", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 0, table = "", places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+    elif table == "buffer":
+        data = db.execute("SELECT * FROM gethelp WHERE district = :district AND requirements = :requirements", {"district": city, "requirements": req}).fetchall()
+        db.close()
+        city = city.replace("-", " ")
+        location = findLatLng(f"{city}, India")
+        print(city)
+        print(location.latitude, location.longitude)
+
+        tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
+        tweets_list = [tweet for tweet in tweets]
+
+        usernames = []
+        locations = []
+        retweets = []
+        texts = []
+        urls = []
+        for tweet in tweets_list:
+            if tweet.user.screen_name not in usernames:
+                usernames.append(tweet.user.screen_name)
+                locations.append(tweet.user.location)
+                retweets.append(tweet.retweet_count)
+                try:
+                    text = tweet.retweeted_status.full_text
+                except:
+                    text = tweet.full_text
+                texts.append(text)
+                urls.append(f"https://twitter.com/{tweet.user.screen_name}")
+
+        if len(data) > 0:
+            return render_template("result.html", helps = 1, table = table, data = data, days = days, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+        else:
+            return render_template("result.html", helps = 1, table = table, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
     else:
         data = db.execute("SELECT * FROM gethelp WHERE district = :district AND requirements = :requirements", {"district": city, "requirements": req}).fetchall()
+        city = city.replace("-", " ")
+        location = findLatLng(f"{city}, India")
+        print(city)
+        print(location.latitude, location.longitude)
+
+        tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
+        tweets_list = [tweet for tweet in tweets]
+
+        usernames = []
+        locations = []
+        retweets = []
+        texts = []
+        urls = []
+        for tweet in tweets_list:
+            if tweet.user.screen_name not in usernames:
+                usernames.append(tweet.user.screen_name)
+                locations.append(tweet.user.location)
+                retweets.append(tweet.retweet_count)
+                try:
+                    text = tweet.retweeted_status.full_text
+                except:
+                    text = tweet.full_text
+                texts.append(text)
+                urls.append(f"https://twitter.com/{tweet.user.screen_name}")
         if len(data) > 0:
             for d in data:
                 date = datetime.date(int(d['date'][:4]), int(d['date'][5:7]), int(d['date'][8:10]))
@@ -243,72 +310,10 @@ def posts(table, city, unique_id):
             db.close()
             print(f"helped count: {helped}")
 
-            city = city.replace("-", " ")
-            location = findLatLng(f"{city}, India")
-            print(city)
-            print(location.latitude, location.longitude)
-
-            tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
-            tweets_list = [tweet for tweet in tweets]
-
-            usernames = []
-            locations = []
-            retweets = []
-            texts = []
-            urls = []
-            for tweet in tweets_list:
-                if tweet.user.screen_name not in usernames:
-                    usernames.append(tweet.user.screen_name)
-                    locations.append(tweet.user.location)
-                    retweets.append(tweet.retweet_count)
-                    try:
-                        text = tweet.retweeted_status.full_text
-                    except:
-                        text = tweet.full_text
-                    texts.append(text)
-                    urls.append(f"https://twitter.com/{tweet.user.screen_name}")
-
-            google_places = GooglePlaces(GOOGLE_MAPS_API_KEY)
-            query_result = google_places.nearby_search(
-                lat_lng ={'lat': location.latitude, 'lng': location.longitude},
-                radius = 20000,
-                types =[types.TYPE_HOSPITAL])
-
-            h = 0
-            places = []
-            for place in query_result.places[:15]:
-                place.get_details()
-                places.append({'name': place.name, 'url': place.url})
-                h += 1
-            print(h)
-            return render_template("result.html", helps = 1, table = table, data = data, days = days, places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 1, table = table, data = data, days = days, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
         else:
             db.close()
-            city = city.replace("-", " ")
-            location = findLatLng(f"{city}, India")
-            print(city)
-            print(location.latitude, location.longitude)
-
-            tweets = tweepy.Cursor(api.search, q = hashtag, lang = "en", tweet_mode = "extended", geocode=f'{location.latitude},{location.longitude},100km', result_type='recent').items(20)
-            tweets_list = [tweet for tweet in tweets]
-
-            usernames = []
-            locations = []
-            retweets = []
-            texts = []
-            urls = []
-            for tweet in tweets_list:
-                if tweet.user.screen_name not in usernames:
-                    usernames.append(tweet.user.screen_name)
-                    locations.append(tweet.user.location)
-                    retweets.append(tweet.retweet_count)
-                    try:
-                        text = tweet.retweeted_status.full_text
-                    except:
-                        text = tweet.full_text
-                    texts.append(text)
-                    urls.append(f"https://twitter.com/{tweet.user.screen_name}")
-            return render_template("result.html", helps = 1, table = "zeroleads", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
+            return render_template("result.html", helps = 1, table = table, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls)
 
 @app.route("/results/<city>", methods = ['GET', 'POST'])
 def hospitals(city):
@@ -357,7 +362,7 @@ def hospitals(city):
         h += 1
     print(h)
 
-    return render_template("result.html", places = places, length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls, table = "")
+    return render_template("result.html", length = len(usernames), usernames = usernames, locations = locations, retweets = retweets, texts = texts, urls = urls, table = "")
 
 @app.route("/report/<unique_id>", methods = ['GET', 'POST'])
 def report(unique_id):
@@ -404,3 +409,89 @@ def submit_feedback():
         else:
             db.close()
             redirect("/")
+
+@app.route("/leads/verify", methods = ['GET', 'POST'])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        user = request.form.get("username")
+        passw = request.form.get("password")
+
+        if (user == USER) and (passw == PASSW):
+            data = db.execute("SELECT * FROM buffer").fetchall()
+            db.close()
+            if len(data) > 0:
+                return render_template("verify.html", data = data)
+            else:
+                return render_template("verify.html")
+        else:
+            return "<script>alert('Wrong credentails'); window.location = window.history.back();</script>"
+
+@app.route("/verified/<unique_id>", methods = ['GET', 'POST'])
+def verified(unique_id):
+    curr = db.execute(f"SELECT * FROM buffer WHERE unique_id = :unique_id", {"unique_id": unique_id}).fetchall()[0]
+    name = curr['name']
+    email = curr['email']
+    district = curr['district']
+    phone = curr['phone']
+    req = curr['requirements']
+    bgroup = curr['bgroup']
+    text = curr['note']
+    date = curr['date']
+    unique_id = curr['unique_id']
+
+    db.execute("INSERT INTO giveleads (unique_id, name, district, date, requirements, bgroup, phone, email, note) VALUES (:unique_id, :name, :district, :date, :requirements, :bgroup, :phone, :email, :note)", {"unique_id": unique_id, "name": name, "district": district, "date": date, "requirements": req, "bgroup": bgroup, "phone": phone, "email": email, "note": text})
+    db.execute("DELETE FROM buffer WHERE unique_id = :unique_id", {"unique_id": unique_id})
+    db.commit()
+
+    print("verified", name, email, district, phone, req, bgroup, text, date)
+
+    data = db.execute("SELECT * FROM gethelp WHERE district = :district AND requirements = :requirements", {"district": district, "requirements": req}).fetchall()
+    if len(data) > 0:
+        days = []
+        for d in data:
+            date = datetime.date(int(d['date'][:4]), int(d['date'][5:7]), int(d['date'][8:10]))
+            diff = datetime.date.today() - date
+            if diff.days == 0:
+                day = "Today"
+            elif diff.days == 1:
+                day = "1 day ago"
+            else:
+                day = f"{diff.days} days ago"
+            days.append(day)
+            body = f"""\
+                <html>
+                <body>
+                    <b>{req}</b> ({day})<br><br>
+                    Lead given by: {curr['name']}<br>
+                    Location: {curr['district']}<br>
+                    Phone: <a href="tel:{curr['phone']}">{curr['phone']}</a><br>
+                    Email: <a href="mailto:{curr['email']}">{curr['email']}</a><br><br>
+                    <a href='https://helping-hand-covid-19.herokuapp.com/feedback/{d['unique_id']}'>If you found this helpful, let us know.</a><br>
+                    <a href='https://helping-hand-covid-19.herokuapp.com/unsubscribe/{d['unique_id']}'>Got the help? Unsubscribe.</a><br>
+                    <br><i>Please respond if you feel the lead provided is a spam by clicking on the below link:</i><br>
+                    <a href='https://helping-hand-covid-19.herokuapp.com/report/{curr['unique_id']}'>Report Spam</a>
+                </body>
+                </html>
+            """
+            try:
+                send_mail(d['email'], "Lead Found", body)
+            except:
+                print("Invalid email")
+        # increase the helped count by 1
+        helped = db.execute("SELECT count FROM helped").fetchall()[0]['count']
+        helped += 1
+        db.execute("UPDATE helped SET count = :count", {"count": helped})
+        db.commit()
+        print(f"helped count: {helped}")
+    db.close()
+    return "<script>alert('Lead verifed'); window.location = window.history.back();</script>"
+
+@app.route("/spam/<unique_id>", methods = ['GET', 'POST'])
+def spam(unique_id):
+    db.execute("DELETE FROM buffer WHERE unique_id = :unique_id", {"unique_id": unique_id})
+    db.commit()
+    db.close()
+
+    return "<script>alert('Record removed'); window.location = window.history.back();</script>"
