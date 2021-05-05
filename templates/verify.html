@@ -18,7 +18,7 @@
 
         .list-group-item{
             margin: 0.5%;
-            padding-bottom: 3%;
+            padding-bottom: 6%;
         }
     </style>
 </head>
@@ -54,29 +54,20 @@
 
             <div class="col-sm-3"></div>
             <div class="col-sm-6">
-                <h3>Buffer Table:</h3><br>
+                <h3>Verify leads:</h3><br>
                 <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-info">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1"><b>List group item heading</b></h5>
-                            <small>3 days ago</small>
+                    {% for d in data %}
+                        <div class="list-group-item list-group-item-action flex-column align-items-start list-group-item-info">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1"><b>{{ d['requirements'] }} {% if d['requirements'] == "Plasma" %}({{ d['bgroup'] }}){% endif %}</b></h5>
+                                <small>{{ d['date'][:10] }}</small>
+                            </div>
+                            <p class="mb-1">{{ d['name'] }} | Location: {{ d['district'] }}</p>
+                            <small>Contact Number: <a href="tel:{{ d['phone'] }}">{{ d['phone'] }}</a><br>Email: <a href="mailto:{{ d['email'] }}">{{ d['email'] }}</a><br>{{ d['note'] }}</small>
+                            <a href="/spam/{{ d['unique_id'] }}" class="btn btn-sm btn-danger" style="float: right;">Spam</a>
+                            <a href="/verified/{{ d['unique_id'] }}" class="btn btn-sm btn-primary" style="float: right; margin-right: 10px;">Verified</a>
                         </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                        </p>
-                        <small>Donec id elit non mi porta.</small>
-
-                        <button style="float: right;" class="btn btn-sm btn-primary">Verified</button>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-info">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1"><b>List group item heading</b></h5>
-                            <small>3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                        </p>
-                        <small>Donec id elit non mi porta.</small>
-                        <button style="float: right;" class="btn btn-sm btn-primary">Verified</button>
-                    </a>
+                    {% endfor %}
                 </div>
             </div>
             <div class="col-sm-3"></div>
